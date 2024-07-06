@@ -12,7 +12,6 @@
 //
 // Execute `rustlings hint cow1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use std::borrow::Cow;
 
@@ -31,6 +30,10 @@ fn abs_all<'a, 'b>(input: &'a mut Cow<'b, [i32]>) -> &'a mut Cow<'b, [i32]> {
 mod tests {
     use super::*;
 
+    // Cow::Borrowed(&T): 当数据是不可变的并且可以被共享时，Cow 将包含一个对借用数据的引用。
+    // Cow::Owned(T): 当需要修改数据或独占数据时，Cow 将拥有数据的所有权，这时会进行克隆，使数据独占。
+    // 在 Cow::from(slice) 中，如果 slice 是一个可共享的不可变数据，Cow 将包含一个对 slice 的借用，这样不会进行克隆操作，而是共享现有数据。如果在后续需要修改数据，Cow 可以使用 .to_mut() 方法将借用数据转换为拥有数据，进行克隆操作以确保数据的可修改性。
+
     #[test]
     fn reference_mutation() -> Result<(), &'static str> {
         // Clone occurs because `input` needs to be mutated.
@@ -48,7 +51,8 @@ mod tests {
         let slice = [0, 1, 2];
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Borrowed(_) => Ok(()),
+            _ => Err("Expected borrowed value"),
         }
     }
 
@@ -61,6 +65,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -73,6 +79,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 }
